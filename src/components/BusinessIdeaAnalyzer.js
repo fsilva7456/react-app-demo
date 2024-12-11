@@ -5,6 +5,31 @@ import IndustryResearch from './IndustryResearch';
 import DataEvolutionStrategy from './DataEvolutionStrategy';
 import { analyzeBusinessIdea } from '../services/openaiService';
 
+// Mock data moved to a separate constants section
+const MOCK_MARKET_DATA = {
+  totalMarketSize: 10,
+  targetMarketSize: 3,
+  growthRate: 15,
+  competitiveLandscape: [
+    { name: 'Market Leader', marketShare: 45 },
+    { name: 'Key Competitor', marketShare: 30 },
+    { name: 'Others', marketShare: 25 }
+  ],
+  revenueModel: {
+    streams: [
+      { name: 'Primary Revenue', potential: 500 },
+      { name: 'Secondary Revenue', potential: 300 }
+    ]
+  },
+  costStructure: {
+    items: [
+      { name: 'Development', amount: 200 },
+      { name: 'Marketing', amount: 150 },
+      { name: 'Operations', amount: 100 }
+    ]
+  }
+};
+
 const MOCK_INDUSTRY_DATA = {
   size: 150,
   cagr: 15.5,
@@ -110,7 +135,7 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
   const [analysis, setAnalysis] = useState(null);
   const [currentPhase, setCurrentPhase] = useState(0);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('market'); // market, industry, data
+  const [activeTab, setActiveTab] = useState('market');
 
   const analyzeBusiness = async (idea) => {
     setLoading(true);
@@ -121,17 +146,7 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
       const result = await analyzeBusinessIdea(idea);
       setAnalysis({
         ...result,
-        marketData: {
-          totalMarketSize: 10, // Mock data - will be replaced by actual analysis
-          targetMarketSize: 3,
-          growthRate: 15,
-          revenueModel: {
-            streams: [
-              { name: 'Primary Revenue', potential: 500 },
-              { name: 'Secondary Revenue', potential: 300 }
-            ]
-          }
-        }
+        marketData: MOCK_MARKET_DATA // Using mock data until API is fully integrated
       });
       setCurrentPhase(0);
       onStageComplete();
