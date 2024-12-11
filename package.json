@@ -1,34 +1,51 @@
 {
+  // Name of the project
   "name": "react-app-demo",
+  // Current version using semantic versioning
   "version": "0.1.0",
+  // Prevents accidental publishing to npm
   "private": true,
+  // Project dependencies required for the application
   "dependencies": {
+    // Testing utilities
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    // Core React packages
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    // Create React App scripts and configuration
     "react-scripts": "5.0.1",
+    // Performance monitoring
     "web-vitals": "^2.1.4"
   },
+  // NPM scripts for development and building
   "scripts": {
+    // Starts development server on localhost:3000
     "start": "react-scripts start",
+    // Creates optimized production build
     "build": "react-scripts build",
+    // Runs test suite in watch mode
     "test": "react-scripts test",
+    // Removes Create React App configuration
     "eject": "react-scripts eject"
   },
+  // ESLint configuration
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
   },
+  // Browser compatibility configuration
   "browserslist": {
+    // Production browser targets
     "production": [
       ">0.2%",
       "not dead",
       "not op_mini all"
     ],
+    // Development browser targets
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
