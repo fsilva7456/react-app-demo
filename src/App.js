@@ -11,7 +11,7 @@ function App() {
             <div className="divide-y divide-gray-200">
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                 <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
-                  Business Idea Analyzer
+                  Analyzer
                 </h1>
                 <BusinessIdeaAnalyzer />
               </div>
