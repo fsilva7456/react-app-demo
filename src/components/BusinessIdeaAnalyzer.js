@@ -1,34 +1,23 @@
 import React, { useState } from 'react';
 import IdeaInput from './IdeaInput';
 import AnalysisResults from './AnalysisResults';
+import { analyzeBusinessIdea } from '../services/openaiService';
 
 const BusinessIdeaAnalyzer = () => {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
+  const [error, setError] = useState(null);
 
   const analyzeBusiness = async (idea) => {
     setLoading(true);
+    setError(null);
     try {
-      // TODO: Replace with actual API call to LLM
-      const mockAnalysis = {
-        pros: [
-          'Low initial investment required',
-          'Growing market demand',
-          'Scalable business model'
-        ],
-        cons: [
-          'High competition',
-          'Seasonal fluctuations',
-          'Regulatory challenges'
-        ]
-      };
-      
-      setTimeout(() => {
-        setAnalysis(mockAnalysis);
-        setLoading(false);
-      }, 1500);
+      const result = await analyzeBusinessIdea(idea);
+      setAnalysis(result);
     } catch (error) {
       console.error('Error analyzing business idea:', error);
+      setError('Failed to analyze business idea. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
@@ -36,6 +25,11 @@ const BusinessIdeaAnalyzer = () => {
   return (
     <div className="space-y-8">
       <IdeaInput onSubmit={analyzeBusiness} loading={loading} />
+      {error && (
+        <div className="bg-red-50 p-4 rounded-md">
+          <p className="text-red-700">{error}</p>
+        </div>
+      )}
       {analysis && <AnalysisResults analysis={analysis} />}
     </div>
   );
