@@ -11,8 +11,8 @@ export const analyzeBusinessIdea = async (idea) => {
   }
 
   try {
-    console.log('Sending request to OpenAI...');
-    const completion = await openai.chat.completions.create({
+    // First analysis
+    const initialAnalysis = await openai.chat.completions.create({
       messages: [
         {
           role: 'system',
@@ -27,22 +27,31 @@ export const analyzeBusinessIdea = async (idea) => {
       temperature: 0.7,
     });
 
-    console.log('OpenAI response:', completion.choices[0].message);
-    
-    try {
-      const analysisText = completion.choices[0].message.content;
-      const analysis = JSON.parse(analysisText);
-      
-      if (!analysis.pros || !analysis.cons || !analysis.example) {
-        throw new Error('Invalid response format from OpenAI');
-      }
-      
-      return analysis;
-    } catch (parseError) {
-      console.error('Error parsing OpenAI response:', parseError);
-      console.log('Raw response:', completion.choices[0].message.content);
-      throw new Error('Failed to parse OpenAI response');
-    }
+    const firstAnalysis = JSON.parse(initialAnalysis.choices[0].message.content);
+
+    // Second analysis to improve the example
+    const improvementAnalysis = await openai.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a business strategy consultant. Your task is to take a business example and its identified challenges (cons) and provide an improved version of the example that specifically addresses these challenges. Format your response as a JSON object with one property: "improvedExample" (string with the enhanced business example that explains how each con is addressed).'
+        },
+        {
+          role: 'user',
+          content: `Original example: ${firstAnalysis.example}\n\nCons to address: ${firstAnalysis.cons.join(', ')}\n\nProvide an improved version of this example that addresses these challenges.`
+        }
+      ],
+      model: 'gpt-3.5-turbo',
+      temperature: 0.7,
+    });
+
+    const improvements = JSON.parse(improvementAnalysis.choices[0].message.content);
+
+    return {
+      ...firstAnalysis,
+      improvedExample: improvements.improvedExample
+    };
+
   } catch (error) {
     console.error('OpenAI API error:', error);
     if (error.response) {
