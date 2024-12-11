@@ -16,26 +16,24 @@ export const analyzeBusinessIdea = async (idea) => {
       messages: [
         {
           role: 'system',
-          content: 'You are a business analyst who helps evaluate business ideas. Provide a balanced analysis with clear pros and cons. Format your response as a JSON object with two arrays: "pros" and "cons".'
+          content: 'You are a business analyst who helps evaluate business ideas. Analyze the business idea and provide: 1) A detailed example of how the business would work in practice, 2) A comprehensive list of pros, and 3) A thorough list of cons. Format your response as a JSON object with three properties: "example" (string with a detailed practical example), "pros" (array), and "cons" (array).'
         },
         {
           role: 'user',
-          content: `Analyze this business idea and provide pros and cons: ${idea}`
+          content: `Analyze this business idea and provide a detailed example, pros, and cons: ${idea}`
         }
       ],
-      model: 'gpt-3.5-turbo',  // Changed to gpt-3.5-turbo as it's more widely available
+      model: 'gpt-3.5-turbo',
       temperature: 0.7,
     });
 
     console.log('OpenAI response:', completion.choices[0].message);
     
-    // Parse the response content as JSON
     try {
       const analysisText = completion.choices[0].message.content;
       const analysis = JSON.parse(analysisText);
       
-      // Validate the response format
-      if (!analysis.pros || !analysis.cons) {
+      if (!analysis.pros || !analysis.cons || !analysis.example) {
         throw new Error('Invalid response format from OpenAI');
       }
       
