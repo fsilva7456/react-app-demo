@@ -3,6 +3,7 @@ import IdeaInput from './IdeaInput';
 import MarketAnalysis from './MarketAnalysis';
 import IndustryResearch from './IndustryResearch';
 import DataEvolutionStrategy from './DataEvolutionStrategy';
+import { analyzeBusinessIdea } from '../services/openaiService';
 
 const MOCK_INDUSTRY_DATA = {
   size: 150,
@@ -117,10 +118,22 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
     onAnalysisStart();
 
     try {
-      // Your existing OpenAI analysis logic here
       const result = await analyzeBusinessIdea(idea);
-      setAnalysis(result);
-      setCurrentPhase(0); // Reset to first phase
+      setAnalysis({
+        ...result,
+        marketData: {
+          totalMarketSize: 10, // Mock data - will be replaced by actual analysis
+          targetMarketSize: 3,
+          growthRate: 15,
+          revenueModel: {
+            streams: [
+              { name: 'Primary Revenue', potential: 500 },
+              { name: 'Secondary Revenue', potential: 300 }
+            ]
+          }
+        }
+      });
+      setCurrentPhase(0);
       onStageComplete();
     } catch (error) {
       console.error('Analysis error:', error);
