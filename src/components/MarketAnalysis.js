@@ -1,14 +1,15 @@
 import React from 'react';
 
 const MarketAnalysis = ({ marketData }) => {
+  // Initialize with default empty values if data is missing
   const {
-    totalMarketSize,
-    targetMarketSize,
-    growthRate,
-    competitiveLandscape,
-    revenueModel,
-    costStructure
-  } = marketData;
+    totalMarketSize = 0,
+    targetMarketSize = 0,
+    growthRate = 0,
+    competitiveLandscape = [],
+    revenueModel = { streams: [] },
+    costStructure = { items: [] }
+  } = marketData || {};
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
@@ -36,49 +37,55 @@ const MarketAnalysis = ({ marketData }) => {
       </div>
 
       {/* Competitive Analysis */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h4 className="text-lg font-medium text-gray-800 mb-3">Competitive Landscape</h4>
-        <div className="space-y-2">
-          {competitiveLandscape.map((competitor, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-gray-700">{competitor.name}</span>
-              <div className="w-2/3 bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-blue-600 rounded-full h-2" 
-                  style={{ width: `${competitor.marketShare}%` }}
-                ></div>
+      {competitiveLandscape.length > 0 && (
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h4 className="text-lg font-medium text-gray-800 mb-3">Competitive Landscape</h4>
+          <div className="space-y-2">
+            {competitiveLandscape.map((competitor, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <span className="text-gray-700">{competitor.name}</span>
+                <div className="w-2/3 bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 rounded-full h-2" 
+                    style={{ width: `${competitor.marketShare}%` }}
+                  ></div>
+                </div>
+                <span className="text-sm text-gray-600">{competitor.marketShare}%</span>
               </div>
-              <span className="text-sm text-gray-600">{competitor.marketShare}%</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Revenue Model */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-yellow-50 p-4 rounded-lg">
-          <h4 className="text-lg font-medium text-yellow-800 mb-3">Revenue Streams</h4>
-          <ul className="space-y-2">
-            {revenueModel.streams.map((stream, index) => (
-              <li key={index} className="flex justify-between">
-                <span className="text-yellow-900">{stream.name}</span>
-                <span className="text-yellow-700">${stream.potential}K/year</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {revenueModel.streams.length > 0 && (
+          <div className="bg-yellow-50 p-4 rounded-lg">
+            <h4 className="text-lg font-medium text-yellow-800 mb-3">Revenue Streams</h4>
+            <ul className="space-y-2">
+              {revenueModel.streams.map((stream, index) => (
+                <li key={index} className="flex justify-between">
+                  <span className="text-yellow-900">{stream.name}</span>
+                  <span className="text-yellow-700">${stream.potential}K/year</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-        <div className="bg-red-50 p-4 rounded-lg">
-          <h4 className="text-lg font-medium text-red-800 mb-3">Cost Structure</h4>
-          <ul className="space-y-2">
-            {costStructure.items.map((item, index) => (
-              <li key={index} className="flex justify-between">
-                <span className="text-red-900">{item.name}</span>
-                <span className="text-red-700">${item.amount}K/year</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {costStructure.items.length > 0 && (
+          <div className="bg-red-50 p-4 rounded-lg">
+            <h4 className="text-lg font-medium text-red-800 mb-3">Cost Structure</h4>
+            <ul className="space-y-2">
+              {costStructure.items.map((item, index) => (
+                <li key={index} className="flex justify-between">
+                  <span className="text-red-900">{item.name}</span>
+                  <span className="text-red-700">${item.amount}K/year</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
