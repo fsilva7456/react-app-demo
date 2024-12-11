@@ -77,12 +77,11 @@ Provide response in JSON format with these fields:
 }
 - risks (array of strings)
 - competitiveAdvantage (string): How the business becomes increasingly difficult to replicate over time`
-          },
-          {
-            role: 'user',
-            content: `Original idea: ${idea}\n\nRefined idea after iterations: ${currentIdea}\n\nRefinement history: ${refinements.map(r => r.improvement).join(', ')}\n\nProvide final analysis focusing on practical implementation and path to market dominance through data advantages.`
-          }
-        ]
+        },
+        {
+          role: 'user',
+          content: `Original idea: ${idea}\n\nRefined idea after iterations: ${currentIdea}\n\nRefinement history: ${refinements.map(r => r.improvement).join(', ')}\n\nProvide final analysis focusing on practical implementation and path to market dominance through data advantages.`
+        }
       ],
       model: 'gpt-3.5-turbo',
       temperature: 0.7,
