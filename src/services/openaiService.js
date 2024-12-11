@@ -11,16 +11,42 @@ export const analyzeBusinessIdea = async (idea) => {
   }
 
   try {
-    // First analysis
-    const initialAnalysis = await openai.chat.completions.create({
+    let currentIdea = idea;
+    let refinements = [];
+
+    // Perform 5 iterations of refinement
+    for(let i = 0; i < 5; i++) {
+      const refinementResponse = await openai.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a business innovation expert. Analyze the business idea and suggest one major refinement that would significantly improve its chances of success. Provide response in JSON format with these fields: refinedIdea (string), reasoning (string), improvement (string).'
+          },
+          {
+            role: 'user',
+            content: `Current business idea: ${currentIdea}${i > 0 ? '\nPrevious refinements: ' + refinements.map(r => r.improvement).join(', ') : ''}`
+          }
+        ],
+        model: 'gpt-3.5-turbo',
+        temperature: 0.7,
+        response_format: { type: "json_object" }
+      });
+
+      const refinement = JSON.parse(refinementResponse.choices[0].message.content);
+      refinements.push(refinement);
+      currentIdea = refinement.refinedIdea;
+    }
+
+    // Get final analysis with validation steps
+    const finalAnalysis = await openai.chat.completions.create({
       messages: [
         {
           role: 'system',
-          content: 'You are a business analyst. Provide analysis in JSON format with exactly these fields: example (string), pros (array of strings), and cons (array of strings). No markdown, no extra text, just pure JSON.'
+          content: 'You are a business strategy consultant. Provide a comprehensive analysis of the refined business idea in JSON format with these fields: finalIdea (string), keyRefinements (array of strings explaining major improvements made), validationSteps (array of objects with "step" and "description" fields), marketEntry (string explaining go-to-market strategy), risks (array of strings).'
         },
         {
           role: 'user',
-          content: `Analyze this business idea with a detailed example, pros, and cons: ${idea}`
+          content: `Original idea: ${idea}\n\nRefined idea after iterations: ${currentIdea}\n\nRefinement history: ${refinements.map(r => r.improvement).join(', ')}\n\nProvide final analysis with validation steps.`
         }
       ],
       model: 'gpt-3.5-turbo',
@@ -28,30 +54,11 @@ export const analyzeBusinessIdea = async (idea) => {
       response_format: { type: "json_object" }
     });
 
-    const firstAnalysis = JSON.parse(initialAnalysis.choices[0].message.content);
-
-    // Second analysis to improve the example
-    const improvementAnalysis = await openai.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a business consultant. Provide response in JSON format with exactly one field: improvedExample (string). This should be a detailed example addressing the provided challenges. No markdown, no extra text, just pure JSON.'
-        },
-        {
-          role: 'user',
-          content: `Original example: ${firstAnalysis.example}\n\nAddress these challenges: ${firstAnalysis.cons.join(', ')}\n\nProvide an improved version of this example that addresses these challenges.`
-        }
-      ],
-      model: 'gpt-3.5-turbo',
-      temperature: 0.7,
-      response_format: { type: "json_object" }
-    });
-
-    const improvements = JSON.parse(improvementAnalysis.choices[0].message.content);
+    const analysis = JSON.parse(finalAnalysis.choices[0].message.content);
 
     return {
-      ...firstAnalysis,
-      improvedExample: improvements.improvedExample
+      ...analysis,
+      refinementJourney: refinements
     };
 
   } catch (error) {
