@@ -6,8 +6,134 @@ import DataEvolutionStrategy from './DataEvolutionStrategy';
 import FinalConcept from './FinalConcept';
 import { analyzeBusinessIdea } from '../services/openaiService';
 
-// Previous mock data remains the same...
+// Mock Market Data
+const MOCK_MARKET_DATA = {
+  totalMarketSize: 10,
+  targetMarketSize: 3,
+  growthRate: 15,
+  competitiveLandscape: [
+    { name: 'Market Leader', marketShare: 45 },
+    { name: 'Key Competitor', marketShare: 30 },
+    { name: 'Others', marketShare: 25 }
+  ],
+  revenueModel: {
+    streams: [
+      { name: 'Primary Revenue', potential: 500 },
+      { name: 'Secondary Revenue', potential: 300 }
+    ]
+  },
+  costStructure: {
+    items: [
+      { name: 'Development', amount: 200 },
+      { name: 'Marketing', amount: 150 },
+      { name: 'Operations', amount: 100 }
+    ]
+  }
+};
 
+// Mock Industry Data
+const MOCK_INDUSTRY_DATA = {
+  size: 150,
+  cagr: 15.5,
+  maturity: 'Growth',
+  innovationIndex: 8,
+  leaders: [
+    { name: 'TechCorp', specialty: 'Enterprise Solutions', revenue: 500 },
+    { name: 'DataCo', specialty: 'Analytics Platform', revenue: 350 },
+    { name: 'AITech', specialty: 'ML Infrastructure', revenue: 280 }
+  ],
+  trends: [
+    {
+      title: 'AI Integration',
+      description: 'Increasing adoption of AI and ML technologies in core products',
+      impact: 'high',
+      adoption: 65
+    },
+    {
+      title: 'Privacy Focus',
+      description: 'Enhanced data privacy and security measures',
+      impact: 'medium',
+      adoption: 80
+    }
+  ],
+  regulations: [
+    {
+      name: 'Data Protection Act',
+      description: 'Comprehensive data privacy and security requirements',
+      impact: 'High',
+      region: 'Global'
+    },
+    {
+      name: 'AI Governance Framework',
+      description: 'Guidelines for responsible AI development and deployment',
+      impact: 'Medium',
+      region: 'EU/US'
+    }
+  ]
+};
+
+// Mock Data Strategy
+const MOCK_DATA_STRATEGY = [
+  {
+    name: 'Initial Data Collection',
+    description: 'Start with minimal but essential data collection to validate core assumptions',
+    dataCollection: [
+      'User behavior basics',
+      'Transaction logs',
+      'Basic feedback'
+    ],
+    metrics: [
+      'User engagement',
+      'Conversion rate',
+      'User retention'
+    ],
+    insights: [
+      'Usage patterns',
+      'Initial pain points'
+    ],
+    complexity: 2
+  },
+  {
+    name: 'Enhanced Analytics',
+    description: 'Expand data collection and begin advanced analytics',
+    dataCollection: [
+      'Detailed user journey',
+      'Feature usage metrics',
+      'Customer feedback analysis'
+    ],
+    metrics: [
+      'Feature adoption rates',
+      'Customer satisfaction score',
+      'Churn prediction'
+    ],
+    insights: [
+      'Customer segments',
+      'Feature impact analysis'
+    ],
+    complexity: 3
+  },
+  {
+    name: 'Predictive Intelligence',
+    description: 'Implement machine learning models and predictive analytics',
+    dataCollection: [
+      'Cross-platform integration',
+      'Real-time monitoring',
+      'Advanced user profiling'
+    ],
+    metrics: [
+      'Prediction accuracy',
+      'Model performance',
+      'Business impact'
+    ],
+    insights: [
+      'Trend forecasting',
+      'Automated optimization'
+    ],
+    complexity: 5
+  }
+];
+
+// Mock Final Concept
 const MOCK_FINAL_CONCEPT = {
   refinedIdea: "An AI-powered B2B SaaS platform that automates financial compliance reporting while building a proprietary dataset of compliance patterns. Starting with minimal customer data requirements, the platform evolves to provide predictive insights and industry benchmarks.",
   keyFeatures: [
@@ -87,7 +213,7 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
   const [analysis, setAnalysis] = useState(null);
   const [currentPhase, setCurrentPhase] = useState(0);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('concept'); // Changed default to 'concept'
+  const [activeTab, setActiveTab] = useState('concept');
 
   const analyzeBusiness = async (idea) => {
     setLoading(true);
@@ -99,7 +225,7 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
       setAnalysis({
         ...result,
         marketData: MOCK_MARKET_DATA,
-        finalConcept: MOCK_FINAL_CONCEPT // Add mock final concept
+        finalConcept: MOCK_FINAL_CONCEPT
       });
       setCurrentPhase(0);
       onStageComplete();
