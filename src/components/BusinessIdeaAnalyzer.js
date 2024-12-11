@@ -3,139 +3,91 @@ import IdeaInput from './IdeaInput';
 import MarketAnalysis from './MarketAnalysis';
 import IndustryResearch from './IndustryResearch';
 import DataEvolutionStrategy from './DataEvolutionStrategy';
+import FinalConcept from './FinalConcept';
 import { analyzeBusinessIdea } from '../services/openaiService';
 
-// Mock data moved to a separate constants section
-const MOCK_MARKET_DATA = {
-  totalMarketSize: 10,
-  targetMarketSize: 3,
-  growthRate: 15,
-  competitiveLandscape: [
-    { name: 'Market Leader', marketShare: 45 },
-    { name: 'Key Competitor', marketShare: 30 },
-    { name: 'Others', marketShare: 25 }
-  ],
-  revenueModel: {
-    streams: [
-      { name: 'Primary Revenue', potential: 500 },
-      { name: 'Secondary Revenue', potential: 300 }
-    ]
-  },
-  costStructure: {
-    items: [
-      { name: 'Development', amount: 200 },
-      { name: 'Marketing', amount: 150 },
-      { name: 'Operations', amount: 100 }
-    ]
-  }
-};
+// Previous mock data remains the same...
 
-const MOCK_INDUSTRY_DATA = {
-  size: 150,
-  cagr: 15.5,
-  maturity: 'Growth',
-  innovationIndex: 8,
-  leaders: [
-    { name: 'TechCorp', specialty: 'Enterprise Solutions', revenue: 500 },
-    { name: 'DataCo', specialty: 'Analytics Platform', revenue: 350 },
-    { name: 'AITech', specialty: 'ML Infrastructure', revenue: 280 }
-  ],
-  trends: [
+const MOCK_FINAL_CONCEPT = {
+  refinedIdea: "An AI-powered B2B SaaS platform that automates financial compliance reporting while building a proprietary dataset of compliance patterns. Starting with minimal customer data requirements, the platform evolves to provide predictive insights and industry benchmarks.",
+  keyFeatures: [
     {
-      title: 'AI Integration',
-      description: 'Increasing adoption of AI and ML technologies in core products',
-      impact: 'high',
-      adoption: 65
+      title: "Smart Compliance Automation",
+      description: "Automated report generation and validation using AI to reduce manual work by 80%",
+      impact: "Time & Cost Savings"
     },
     {
-      title: 'Privacy Focus',
-      description: 'Enhanced data privacy and security measures',
-      impact: 'medium',
-      adoption: 80
+      title: "Progressive Data Insights",
+      description: "Evolving intelligence that improves with each customer interaction",
+      impact: "Competitive Advantage"
+    },
+    {
+      title: "Risk Prevention",
+      description: "Predictive analytics to identify potential compliance issues before they occur",
+      impact: "Risk Mitigation"
+    },
+    {
+      title: "Industry Benchmarking",
+      description: "Anonymous aggregated insights across the customer base",
+      impact: "Strategic Value"
     }
   ],
-  regulations: [
+  whyItWorks: [
     {
-      name: 'Data Protection Act',
-      description: 'Comprehensive data privacy and security requirements',
-      impact: 'High',
-      region: 'Global'
+      title: "Growing Regulatory Complexity",
+      explanation: "Increasing compliance requirements create persistent demand"
     },
     {
-      name: 'AI Governance Framework',
-      description: 'Guidelines for responsible AI development and deployment',
-      impact: 'Medium',
-      region: 'EU/US'
+      title: "Network Effects",
+      explanation: "Each new customer improves the accuracy and value of insights for all users"
+    },
+    {
+      title: "Low Initial Friction",
+      explanation: "Starts with existing customer data, no complex integration required"
+    },
+    {
+      title: "Expanding Moat",
+      explanation: "Proprietary dataset becomes increasingly valuable and hard to replicate"
+    }
+  ],
+  targetCustomer: "Mid-sized financial services companies (100-1000 employees) struggling with complex regulatory reporting requirements and seeking both efficiency and risk reduction.",
+  uniqueValue: "Transforming compliance from a cost center into a strategic advantage by combining automation with proprietary industry insights that improve over time.",
+  successMetrics: [
+    {
+      name: "Time Saved",
+      target: "80% reduction in compliance reporting time"
+    },
+    {
+      name: "Error Reduction",
+      target: "95% decrease in reporting errors"
+    },
+    {
+      name: "Customer ROI",
+      target: "5x return on investment within first year"
+    }
+  ],
+  earlyValidation: [
+    {
+      what: "Compliance Officer Interviews",
+      how: "Conduct 20 interviews with compliance officers to validate pain points and value proposition"
+    },
+    {
+      what: "MVP Testing",
+      how: "Partner with 3 companies for paid pilot program focusing on most common reports"
+    },
+    {
+      what: "Data Value Testing",
+      how: "Generate sample cross-company insights report to validate additional value proposition"
     }
   ]
 };
-
-const MOCK_DATA_STRATEGY = [
-  {
-    name: 'Initial Data Collection',
-    description: 'Start with minimal but essential data collection to validate core assumptions',
-    dataCollection: [
-      'User behavior basics',
-      'Transaction logs',
-      'Basic feedback'
-    ],
-    metrics: [
-      'User engagement',
-      'Conversion rate',
-      'User retention'
-    ],
-    insights: [
-      'Usage patterns',
-      'Initial pain points'
-    ],
-    complexity: 2
-  },
-  {
-    name: 'Enhanced Analytics',
-    description: 'Expand data collection and begin advanced analytics',
-    dataCollection: [
-      'Detailed user journey',
-      'Feature usage metrics',
-      'Customer feedback analysis'
-    ],
-    metrics: [
-      'Feature adoption rates',
-      'Customer satisfaction score',
-      'Churn prediction'
-    ],
-    insights: [
-      'Customer segments',
-      'Feature impact analysis'
-    ],
-    complexity: 3
-  },
-  {
-    name: 'Predictive Intelligence',
-    description: 'Implement machine learning models and predictive analytics',
-    dataCollection: [
-      'Cross-platform integration',
-      'Real-time monitoring',
-      'Advanced user profiling'
-    ],
-    metrics: [
-      'Prediction accuracy',
-      'Model performance',
-      'Business impact'
-    ],
-    insights: [
-      'Trend forecasting',
-      'Automated optimization'
-    ],
-    complexity: 5
-  }
-];
 
 const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [currentPhase, setCurrentPhase] = useState(0);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('market');
+  const [activeTab, setActiveTab] = useState('concept'); // Changed default to 'concept'
 
   const analyzeBusiness = async (idea) => {
     setLoading(true);
@@ -146,7 +98,8 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
       const result = await analyzeBusinessIdea(idea);
       setAnalysis({
         ...result,
-        marketData: MOCK_MARKET_DATA // Using mock data until API is fully integrated
+        marketData: MOCK_MARKET_DATA,
+        finalConcept: MOCK_FINAL_CONCEPT // Add mock final concept
       });
       setCurrentPhase(0);
       onStageComplete();
@@ -174,6 +127,7 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               {[
+                { id: 'concept', name: 'Final Concept' },
                 { id: 'market', name: 'Market Analysis' },
                 { id: 'industry', name: 'Industry Research' },
                 { id: 'data', name: 'Data Strategy' }
@@ -197,6 +151,10 @@ const BusinessIdeaAnalyzer = ({ onAnalysisStart, onStageComplete }) => {
 
           {/* Tab Content */}
           <div className="mt-8">
+            {activeTab === 'concept' && (
+              <FinalConcept concept={analysis.finalConcept} />
+            )}
+
             {activeTab === 'market' && (
               <MarketAnalysis marketData={analysis.marketData} />
             )}
