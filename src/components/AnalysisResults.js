@@ -6,13 +6,13 @@ const AnalysisResults = ({ analysis }) => {
       <div>
         <h3 className="text-lg font-medium text-gray-900 mb-4">Analysis Results</h3>
         
-        {/* Detailed Example */}
+        {/* Initial Example */}
         <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <h4 className="text-blue-800 font-medium mb-2">Detailed Example</h4>
+          <h4 className="text-blue-800 font-medium mb-2">Initial Business Model</h4>
           <p className="text-blue-700 whitespace-pre-wrap">{analysis.example}</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-6">
           {/* Pros */}
           <div className="bg-green-50 p-4 rounded-lg">
             <h4 className="text-green-800 font-medium mb-2">Pros</h4>
@@ -33,6 +33,14 @@ const AnalysisResults = ({ analysis }) => {
             </ul>
           </div>
         </div>
+
+        {/* Improved Example */}
+        {analysis.improvedExample && (
+          <div className="bg-emerald-50 p-4 rounded-lg">
+            <h4 className="text-emerald-800 font-medium mb-2">Improved Business Model (Addressing Challenges)</h4>
+            <p className="text-emerald-700 whitespace-pre-wrap">{analysis.improvedExample}</p>
+          </div>
+        )}
       </div>
     </div>
   );
